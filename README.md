@@ -62,6 +62,31 @@ python main.py portfolio
 python main.py backtest
 ```
 
+## Cloud Hosting with GitHub Actions ☁️
+
+You do **not** need to keep your PC turned on. The repository includes an automated workflow at `.github/workflows/daily-analysis.yml` that runs in GitHub's cloud every weekday at 07:00 Berlin time.
+
+### Step-by-Step Setup:
+
+1. **Add your Secrets in GitHub**:
+   - Go to your repository: [https://github.com/BharatB427/etf-analyzer](https://github.com/BharatB427/etf-analyzer)
+   - Click **Settings** > **Secrets and variables** > **Actions**
+   - Click **New repository secret** for each of:
+     - `EMAIL_ADDRESS`: Your Gmail address (e.g. `yourname@gmail.com`)
+     - `EMAIL_PASSWORD`: Your 16-character Google App Password
+     - `RECIPIENT_EMAIL`: Where you want to receive the alerts
+2. **Grant Workflow Write Permissions** (for portfolio state tracking):
+   - In GitHub, go to **Settings** > **Actions** > **General**
+   - Scroll down to **Workflow permissions**
+   - Select **Read and write permissions**
+   - Click **Save**
+3. **Trigger your first Cloud Run**:
+   - Go to the **Actions** tab in your GitHub repository
+   - Select **Daily ETF Analysis** on the left
+   - Click **Run workflow** > **Run workflow**
+   - Once it runs, you'll receive the email and can download the HTML report artifact!
+
+
 ## Commands
 
 | Command | Description |
