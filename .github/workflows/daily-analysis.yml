@@ -28,11 +28,21 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Verify email configuration
+        run: |
+          if [ -z "$EMAIL_ADDRESS" ]; then echo "::warning::EMAIL_ADDRESS is empty (not found in Repository Secrets or Variables)"; else echo "EMAIL_ADDRESS is set"; fi
+          if [ -z "$EMAIL_PASSWORD" ]; then echo "::warning::EMAIL_PASSWORD is empty (not found in Repository Secrets or Variables)"; else echo "EMAIL_PASSWORD is set"; fi
+          if [ -z "$RECIPIENT_EMAIL" ]; then echo "::warning::RECIPIENT_EMAIL is empty (not found in Repository Secrets or Variables)"; else echo "RECIPIENT_EMAIL is set"; fi
+        env:
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS || vars.EMAIL_ADDRESS }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD || vars.EMAIL_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL || vars.RECIPIENT_EMAIL }}
+
       - name: Run ETF analysis
         env:
-          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS || vars.EMAIL_ADDRESS }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD || vars.EMAIL_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL || vars.RECIPIENT_EMAIL }}
         run: python main.py run
 
       - name: Save HTML report as artifact
