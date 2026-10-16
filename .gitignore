@@ -1,6 +1,5 @@
 # Environment & secrets
 .env
-portfolio.json
 
 # Python
 __pycache__/
