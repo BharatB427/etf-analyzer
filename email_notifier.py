@@ -27,9 +27,17 @@ class EmailNotifier:
         Retries up to ``cfg.max_retries`` times on transient errors.
         """
         if not self.cfg.is_configured():
+            missing = []
+            if not self.cfg.sender_email:
+                missing.append("EMAIL_ADDRESS")
+            if not self.cfg.sender_password:
+                missing.append("EMAIL_PASSWORD")
+            if not self.cfg.recipient_email:
+                missing.append("RECIPIENT_EMAIL")
             logger.error(
-                "Email not configured — set EMAIL_ADDRESS, EMAIL_PASSWORD, "
-                "and RECIPIENT_EMAIL environment variables."
+                "Email not configured -- missing required setting(s): %s. "
+                "Please check your .env file or GitHub Repository Secrets.",
+                ", ".join(missing),
             )
             return False
 
@@ -38,7 +46,7 @@ class EmailNotifier:
         for attempt in range(1, self.cfg.max_retries + 1):
             try:
                 logger.info(
-                    "Sending email (attempt %d/%d) to %s …",
+                    "Sending email (attempt %d/%d) to %s ...",
                     attempt,
                     self.cfg.max_retries,
                     self.cfg.recipient_email,
@@ -53,12 +61,12 @@ class EmailNotifier:
                         self.cfg.recipient_email,
                         msg.as_string(),
                     )
-                logger.info("✅ Email sent successfully.")
+                logger.info("[OK] Email sent successfully.")
                 return True
 
             except smtplib.SMTPAuthenticationError as exc:
                 logger.error(
-                    "Authentication failed — check your Gmail App Password: %s", exc
+                    "Authentication failed -- check your Gmail App Password: %s", exc
                 )
                 return False  # no point retrying auth errors
 

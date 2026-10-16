@@ -134,6 +134,15 @@ class EmailConfig:
     max_retries: int = 3
     retry_delay_seconds: int = 5
 
+    def __post_init__(self) -> None:
+        self.sender_email = (self.sender_email or "").strip().strip('"').strip("'")
+        self.recipient_email = (self.recipient_email or "").strip().strip('"').strip("'")
+        if self.sender_password:
+            # Strip quotes/whitespace and remove spaces from Google App Password (e.g. "abcd efgh ijkl mnop" -> "abcdefghijklmnop")
+            self.sender_password = (
+                self.sender_password.strip().strip('"').strip("'").replace(" ", "")
+            )
+
     def is_configured(self) -> bool:
         """Return True if all required email fields are set."""
         return bool(self.sender_email and self.sender_password and self.recipient_email)
