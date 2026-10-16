@@ -1,0 +1,18 @@
+# Environment & secrets
+.env
+portfolio.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Logs & reports
+*.log
+report_*.html
+
+# IDE
+.vscode/
+.idea/
